@@ -1,5 +1,7 @@
 # Illinois Covid Vaccines - 1st & 2nd Doses
 
+![screenshot of results](https://user-images.githubusercontent.com/74382969/116957112-a6c79b00-ac5c-11eb-8d65-26a69db9f6a1.png)
+
 ## Overview
 
 This project splits the covid vaccination data published by the Illinois Department of Public Health into first and second doses. It displays a graph of daily 1st and 2nd doses as well as running averages of each.
