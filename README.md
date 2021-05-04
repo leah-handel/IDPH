@@ -6,9 +6,7 @@
 
 This project splits the covid vaccination data published by the Illinois Department of Public Health into first and second doses. It displays a graph of daily 1st and 2nd doses as well as running averages of each.
 
-The notebook takes user input to run the analysis for the state as a whole or for a specific county.
-
-I am continuing to refactor this project as I learn more code and am planning to get it up on github project pages.
+The notebook takes user input to run the analysis for the state as a whole or for a specific county or the city of Chicago(shown in the screenshot above).
 
 ## Data
 
