@@ -1,4 +1,24 @@
-var IL_counties = ["","Adams", "Alexander", "Bond", "Boone", "Brown", "Bureau", "Calhoun", "Carroll",
+function unpack(response){
+  datasets = {};
+  response.forEach(function (county){
+    var name = county[0]["CountyName"];
+    data={};
+    county.forEach(function (row){
+      var date = row.Report_Date;
+      var daily_stats = {};
+
+      daily_stats.total_doses = row.AdministeredCount;
+      daily_stats.new_doses = row.AdministeredCountChange;
+      daily_stats.fully_vaxxed = row.PersonsFullyVaccinated;
+      
+      data[date] = daily_stats;
+    });
+    datasets[name] = data;
+  });
+  return datasets;
+}
+
+var IL_counties = ["Adams", "Alexander", "Bond", "Boone", "Brown", "Bureau", "Calhoun", "Carroll",
               "Cass", "Champaign", "Chicago", "Christian", "Clark", "Clay", "Clinton", "Coles",
               "Cook", "Crawford", "Cumberland", "De Witt", "DeKalb", "Douglas", "DuPage", "Edgar",
               "Edwards", "Effingham", "Fayette", "Ford", "Franklin", "Fulton", "Gallatin","Greene",
@@ -11,7 +31,7 @@ var IL_counties = ["","Adams", "Alexander", "Bond", "Boone", "Brown", "Bureau", 
               "Richland", "Rock Island", "Saline", "Sangamon", "Schuyler", "Scott", "Shelby",
               "St. Clair", "Stark", "Stephenson", "Tazewell", "Union", "Vermilion", "Wabash",
               "Warren", "Washington", "Wayne", "White", "Whiteside", "Will", "Williamson", 
-              "Winnebago", "Woodford"];
+              "Winnebago", "Woodford",""];
 
 var promises = [];
 
@@ -20,8 +40,12 @@ IL_counties.forEach(function(county) {
   promises.push(d3.json(url));
 });
 
-Promise.all(promises).then(function(data) {
-console.log(data)
+Promise.all(promises).then(function(response) {
+  console.log(response[103])
+
+  var county_data = unpack(response);
+  console.log(county_data);
+
 });
 
 // everything to do with the graph goes in here:
