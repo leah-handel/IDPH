@@ -1,5 +1,27 @@
-d3.csv("IL_counties.csv").then(function(data) {
-    console.log(data);
+var IL_counties = ["","Adams", "Alexander", "Bond", "Boone", "Brown", "Bureau", "Calhoun", "Carroll",
+              "Cass", "Champaign", "Chicago", "Christian", "Clark", "Clay", "Clinton", "Coles",
+              "Cook", "Crawford", "Cumberland", "De Witt", "DeKalb", "Douglas", "DuPage", "Edgar",
+              "Edwards", "Effingham", "Fayette", "Ford", "Franklin", "Fulton", "Gallatin","Greene",
+              "Grundy", "Hamilton", "Hancock", "Hardin", "Henderson", "Henry", "Iroquois","Jackson",
+              "Jasper", "Jefferson", "Jersey", "Jo Daviess", "Johnson", "Kane", "Kankakee",
+              "Kendall", "Knox", "Lake", "LaSalle", "Lawrence", "Lee", "Livingston", "Logan",
+              "Macon", "Macoupin", "Madison", "Marion", "Marshall", "Mason", "Massac", "McDonough",
+              "McHenry", "McLean", "Menard", "Mercer", "Monroe", "Montgomery", "Morgan", "Moultrie",
+              "Ogle", "Peoria", "Perry", "Piatt", "Pike", "Pope", "Pulaski", "Putnam", "Randolph",
+              "Richland", "Rock Island", "Saline", "Sangamon", "Schuyler", "Scott", "Shelby",
+              "St. Clair", "Stark", "Stephenson", "Tazewell", "Union", "Vermilion", "Wabash",
+              "Warren", "Washington", "Wayne", "White", "Whiteside", "Will", "Williamson", 
+              "Winnebago", "Woodford"];
+
+var promises = [];
+
+IL_counties.forEach(function(county) {
+  var url = `https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/GetVaccineAdministration?countyname=${county}`
+  promises.push(d3.json(url));
+});
+
+Promise.all(promises).then(function(data) {
+console.log(data)
 });
 
 // everything to do with the graph goes in here:
