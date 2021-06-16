@@ -11,6 +11,7 @@ function unpack(response){
       daily_stats.new_doses = row.AdministeredCountChange;
       daily_stats.fully_vaxxed = row.PersonsFullyVaccinated;
       
+
       data[date] = daily_stats;
     });
     datasets[name] = data;
@@ -31,26 +32,33 @@ var IL_counties = ["Adams", "Alexander", "Bond", "Boone", "Brown", "Bureau", "Ca
               "Richland", "Rock Island", "Saline", "Sangamon", "Schuyler", "Scott", "Shelby",
               "St. Clair", "Stark", "Stephenson", "Tazewell", "Union", "Vermilion", "Wabash",
               "Warren", "Washington", "Wayne", "White", "Whiteside", "Will", "Williamson", 
-              "Winnebago", "Woodford",""];
+              "Winnebago", "Woodford",];
 
-var promises = [];
+var countyPromises = [];
 
 IL_counties.forEach(function(county) {
-  var url = `https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/GetVaccineAdministration?countyname=${county}`
-  promises.push(d3.json(url));
+  var countyURL = `https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/GetVaccineAdministration?countyname=${county}`
+  countyPromises.push(d3.json(countyURL));
 });
 
-Promise.all(promises).then(function(response) {
-  console.log(response[103])
+county_data = Promise.all(countyPromises).then(function(countyResponse) {
 
-  var county_data = unpack(response);
-  console.log(county_data);
-
+  var results = unpack(countyResponse);
+  console.log(results);
+  return results;
 });
 
-// everything to do with the graph goes in here:
+var stateURL = 'https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/GetVaccineAdministration?countyname=';
 
-function makeResponsive() {
+d3.json(stateURL).then(function(stateResponse){ 
+
+  console.log(stateResponse);
+
+
+
+  // everything to do with the graph goes in here:
+
+  function makeResponsive() {
 
     var svgArea = d3.select("body").select("svg");
   
@@ -77,14 +85,20 @@ function makeResponsive() {
   
     // Select body, append SVG area to it, and set the dimensions
     var svg = d3
-      .select("#scatter")
+      .select("#graph")
       .append("svg")
       .attr("height", svgHeight)
       .attr("width", svgWidth);
-}
 
-makeResponsive();
+      
+  }
 
-// window size event listener
 
-d3.select(window).on("resize", makeResponsive);
+
+  makeResponsive();
+
+  // window size event listener
+
+  d3.select(window).on("resize", makeResponsive);
+
+});
