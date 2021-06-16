@@ -50,13 +50,8 @@ county_data = Promise.all(countyPromises).then(function(countyResponse) {
 
 var stateURL = 'https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/GetVaccineAdministration?countyname=';
 
-d3.json(stateURL).then(function(stateResponse){ 
 
-  console.log(stateResponse);
-
-
-
-  // everything to do with the graph goes in here:
+  // defining chart area goes here
 
   function makeResponsive() {
 
@@ -90,15 +85,40 @@ d3.json(stateURL).then(function(stateResponse){
       .attr("height", svgHeight)
       .attr("width", svgWidth);
 
+    var labelsGroup = svg.append("g")
+      .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
+    
+    labelsGroup.append("text")
+      .attr("transform", `translate(${chartWidth / 2}, ${chartHeight})`)
+      .style('text-anchor', 'middle')
+      .text("Date");
+
+    labelsGroup.append("text")
+      .attr("transform",`rotate(-90) translate(-${chartHeight/2}, 0)`)
+      .style('text-anchor', 'middle')
+      .text("Doses");
+
+    function makeGraph() {
+
+      d3.json(stateURL).then(function(stateResponse){ 
+
+        console.log(stateResponse);
       
-  }
+      
+  
+
+      });
 
 
-
-  makeResponsive();
-
+    }
+  
+    makeGraph();
   // window size event listener
 
-  d3.select(window).on("resize", makeResponsive);
+  
 
-});
+}
+
+makeResponsive();
+
+d3.select(window).on("resize", makeResponsive);
