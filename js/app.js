@@ -98,21 +98,56 @@ var stateURL = 'https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/G
       .style('text-anchor', 'middle')
       .text("Doses");
 
-    function makeGraph() {
-
-      d3.json(stateURL).then(function(stateResponse){ 
-
-        console.log(stateResponse);
-      
-      
+    var chartGroup = svg.append("g")
+      .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
   
+
+    function makeGraphs() {
+
+      d3.json(stateURL).then(function(response){ 
+
+        console.log(response);
+
+        chartGroup.selectAll("*").remove();
+
+        var totalsData = {ylabel: "% Vaccinated", lines: [{name: "One Dose", values: []}, {name: "Fully Vaccinated", values: []}]};
+
+        var dailyData = {ylabel: "Daily Doses", lines: [{name: "First Dose", values: []}, {name: "Second Dose", values: []}]};
+        
+        var dates = [];
+
+        response.forEach(function(row, index) {
+
+          if (index == 0) {
+            var secondDoses = row.PersonsFullyVaccinated;
+          }else {
+            var secondDoses = row.PersonsFullyVaccinated - response[index-1]["PersonsFullyVaccinated"];
+          }
+
+          var firstDoses = row.AdministeredCountChange - secondDoses;
+
+          dailyData["lines"][0]["values"].push(firstDoses);
+          dailyData["lines"][1]["values"].push(secondDoses);
+
+          var totalSecond = row.PersonsFullyVaccinated;
+          var totalFirst = dailyData["lines"][0]["values"].reduce(function (a, b) { return a + b; }, 0);
+
+          totalsData["lines"][0]["values"].push(totalFirst);
+          totalsData["lines"][1]["values"].push(totalSecond);
+
+          dates.push(row.Report_Date);
+          // use lumen to handle date format
+
+        });
+
+        console.log(dailyData);
+        console.log(totalsData);
 
       });
 
-
     }
   
-    makeGraph();
+    makeGraphs();
   // window size event listener
 
   

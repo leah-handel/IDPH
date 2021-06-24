@@ -4,18 +4,22 @@
 
 ## Overview
 
-This project splits the covid vaccination data published by the Illinois Department of Public Health into first and second doses. It displays a graph of daily 1st and 2nd doses as well as running averages of each.
+This project tracks covid vaccination progress in Illinois, broken down by county.
 
-The notebook takes user input to run the analysis for the state as a whole or for a specific county or the city of Chicago(shown in the screenshot above).
+## Python Version
+
+This section uses python with matplotlib in a Jupyter Notebook. It displays a graph of daily 1st and 2nd doses as well as running averages of each.
+
+The notebook displays a graph of daily 1st and 2nd doses as well as running averages of each. It takes user input to run the analysis for the state as a whole or for a specific county or the city of Chicago(shown in the screenshot above).
+
+## Javascript Version
+
+In progress! My goal is to expand the project with additional data and visualizations in D3.
 
 ## Data
 
 This analysis uses the statewide daily vaccine data published here: https://www.dph.illinois.gov/content/covid-19-vaccine-administration-data
 
-## Technologies
-
-* Analysis: Python via Jupyter Notebook
-* Visualization: Matplotlib
 
 ## To Run
 
