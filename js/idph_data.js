@@ -78,7 +78,7 @@ var stateURL = 'https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/G
     var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
   
   
-    // Select body, append SVG area to it, and set the dimensions
+    // Select div, append SVG area to it, and set the dimensions
     var svg = d3
       .select("#graph")
       .append("svg")
