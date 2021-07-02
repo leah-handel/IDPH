@@ -1,4 +1,4 @@
-function date_sort( a, b ) {
+function dateSort(a, b) {
     if ( a.date < b.date ){
       return -1;
     }
@@ -7,6 +7,23 @@ function date_sort( a, b ) {
     }
     return 0;
   }
+
+function getAvg(values, period) {
+  avgValues = [];
+  values.forEach(function(date, index){
+    if(index < period-1){
+      avg = 0;
+    }else{
+      sum = 0;
+      for (var i = 0; i < period-1; i++) {
+        sum += values[index-i]
+      };
+      avg = sum/period;
+    }
+    avgValues.push(avg);
+  });
+  return avgValues;
+}
 
 
 // filter by state and get all counties at once instead?
@@ -66,7 +83,7 @@ function makeResponsive() {
 
         d3.json(url).then(function(cdcResponse){ 
 
-            data = cdcResponse.sort(date_sort);
+            data = cdcResponse.sort(dateSort);
 
             console.log(data);
 
@@ -82,6 +99,7 @@ function makeResponsive() {
                     var secondDoses = row.series_complete_yes - data[index-1]["series_complete_yes"];
                 }
 
+
                 chartData.push({date: row.date, newFirstDoses: firstDoses, newSecondDoses: secondDoses});
 
             // push running totals, seven day avg, daily numbers
@@ -89,6 +107,8 @@ function makeResponsive() {
             });
 
             console.log(chartData);
+
+            console.log(getAvg(chartData.map(d=>d.newFirstDoses), 7));
 
         });
 
