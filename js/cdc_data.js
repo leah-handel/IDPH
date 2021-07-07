@@ -47,7 +47,7 @@ function makeResponsive() {
      top: 30,
      right: 50,
       bottom: 50,
-      left: 50
+      left: 80
     };
   
     // Define dimensions of the chart area
@@ -66,12 +66,12 @@ function makeResponsive() {
       .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
     
     labelsGroup.append("text")
-      .attr("transform", `translate(${chartWidth / 2}, ${chartHeight})`)
+      .attr("transform", `translate(${chartWidth / 2}, ${chartHeight+30})`)
       .style('text-anchor', 'middle')
       .text("Date");
 
     labelsGroup.append("text")
-      .attr("transform",`rotate(-90) translate(-${chartHeight/2}, 0)`)
+      .attr("transform",`rotate(-90) translate(-${chartHeight/2}, -60)`)
       .style('text-anchor', 'middle')
       .text("Doses");
 
@@ -135,6 +135,25 @@ function makeResponsive() {
             // domain and range
 
 
+          var xScale = d3.scaleTime()
+            .domain([d3.min(chartData.map(d=>luxon.DateTime.fromISO(d.date))), d3.max(chartData.map(d=>luxon.DateTime.fromISO(d.date)))])
+            .range([0, chartWidth]);
+
+          var yData = ["newFirstDoses", "newSecondDoses", "firstAvg", "secondAvg"]
+
+          var yScale = d3.scaleLinear()
+            .domain([0, d3.max(yData.map(d=>d3.max(chartData.map(e=>e[d]))))])
+            .range([chartHeight, 0]);
+
+          var yAxis = d3.axisLeft(yScale);
+          var xAxis = d3.axisBottom(xScale);
+      
+          chartGroup.append("g")
+            .call(yAxis);
+      
+          chartGroup.append("g")
+            .attr("transform", `translate(0, ${chartHeight})`)
+            .call(xAxis);
         });
 
 
