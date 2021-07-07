@@ -8,6 +8,8 @@ function dateSort(a, b) {
     return 0;
   }
 
+// fix this so it can be called within the for loop over the cdc data aka takes one value and the index
+
 function getAvg(values, period) {
   avgValues = [];
   values.forEach(function(date, index){
@@ -99,7 +101,6 @@ function makeResponsive() {
                     var secondDoses = row.series_complete_yes - data[index-1]["series_complete_yes"];
                 }
 
-
                 chartData.push({date: row.date, newFirstDoses: firstDoses, newSecondDoses: secondDoses});
 
             // push running totals, seven day avg, daily numbers
@@ -108,7 +109,31 @@ function makeResponsive() {
 
             console.log(chartData);
 
-            console.log(getAvg(chartData.map(d=>d.newFirstDoses), 7));
+            chartData.forEach(function (row, index) {
+
+              if (index < 7) {
+                var firstAvg = NaN;
+                var secondAvg = NaN;
+              }else {
+                firstSum = 0;
+                secondSum = 0;
+                for (var i = 0; i < 7; i++) {
+                  firstSum += chartData[index-i]["newFirstDoses"];
+                  secondSum += chartData[index-i]["newSecondDoses"];
+                };
+                var firstAvg = firstSum/7;
+                var secondAvg = secondSum/7;
+              }
+
+              row.firstAvg = firstAvg;
+              row.secondAvg = secondAvg;
+
+            });
+
+            console.log(chartData);
+
+            // domain and range
+
 
         });
 
