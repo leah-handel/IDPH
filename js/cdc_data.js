@@ -66,7 +66,7 @@ function makeResponsive() {
       .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
     
     labelsGroup.append("text")
-      .attr("transform", `translate(${chartWidth / 2}, ${chartHeight+30})`)
+      .attr("transform", `translate(${chartWidth / 2}, ${chartHeight+40})`)
       .style('text-anchor', 'middle')
       .text("Date");
 
@@ -94,11 +94,15 @@ function makeResponsive() {
             data.forEach(function(row, index){
 
                 if (index == 0) {
-                    var firstDoses = parseInt(row.administered_dose1_recip);
-                    var secondDoses = parseInt(row.series_complete_yes);
+                  var firstDoses = parseInt(row.administered_dose1_recip);
+                  var secondDoses = parseInt(row.series_complete_yes);
                 }else {
-                    var firstDoses = row.administered_dose1_recip - data[index-1]["administered_dose1_recip"];
-                    var secondDoses = row.series_complete_yes - data[index-1]["series_complete_yes"];
+                  var firstDoses = parseInt(row.administered_dose1_recip - data[index-1]["administered_dose1_recip"]);
+                  var secondDoses = parseInt(row.series_complete_yes - data[index-1]["series_complete_yes"]);
+                }
+
+                if (isNaN(firstDoses)) {
+                  firstDoses = 0;
                 }
 
                 chartData.push({date: row.date, newFirstDoses: firstDoses, newSecondDoses: secondDoses});
@@ -136,17 +140,17 @@ function makeResponsive() {
 
 
           var xScale = d3.scaleTime()
-            .domain([d3.min(chartData.map(d=>luxon.DateTime.fromISO(d.date))), d3.max(chartData.map(d=>luxon.DateTime.fromISO(d.date)))])
+            .domain([d3.min(chartData.map(d=>luxon.DateTime.fromISO(d.date))), d3.max(chartData.map(d=>luxon.DateTime.fromISO(d.date)))]).nice()
             .range([0, chartWidth]);
 
           var yData = ["newFirstDoses", "newSecondDoses", "firstAvg", "secondAvg"]
 
           var yScale = d3.scaleLinear()
-            .domain([0, d3.max(yData.map(d=>d3.max(chartData.map(e=>e[d]))))])
+            .domain([0, d3.max(yData.map(d=>d3.max(chartData.map(e=>e[d]))))]).nice()
             .range([chartHeight, 0]);
 
-          var yAxis = d3.axisLeft(yScale);
-          var xAxis = d3.axisBottom(xScale);
+          var yAxis = d3.axisLeft(yScale).ticks(chartHeight/60);
+          var xAxis = d3.axisBottom(xScale).ticks();
       
           chartGroup.append("g")
             .call(yAxis);
@@ -154,6 +158,20 @@ function makeResponsive() {
           chartGroup.append("g")
             .attr("transform", `translate(0, ${chartHeight})`)
             .call(xAxis);
+
+          // adding simple bars
+
+          chartGroup.selectAll("bars")
+            .data(chartData)
+            .enter()
+            .append("rect")
+            .attr("x", d => xScale(luxon.DateTime.fromISO(d.date)))
+            .attr("y", d => yScale(d.newFirstDoses))
+            .attr("width", 2)
+            .attr("height", function(d) { return chartHeight - yScale(d.newFirstDoses); })
+            .attr("fill", "#69b3a2")
+
+          
         });
 
 
