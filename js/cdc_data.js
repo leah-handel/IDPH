@@ -159,7 +159,9 @@ function makeResponsive() {
             .attr("transform", `translate(0, ${chartHeight})`)
             .call(xAxis);
 
-          // adding simple bars
+          bandWidth = .7*chartWidth/chartData.length;
+
+          // scale for 
 
           chartGroup.selectAll("bars")
             .data(chartData)
@@ -167,9 +169,20 @@ function makeResponsive() {
             .append("rect")
             .attr("x", d => xScale(luxon.DateTime.fromISO(d.date)))
             .attr("y", d => yScale(d.newFirstDoses))
-            .attr("width", 2)
-            .attr("height", function(d) { return chartHeight - yScale(d.newFirstDoses); })
-            .attr("fill", "#69b3a2")
+            .attr("width", bandWidth/2)
+            .attr("height", d => chartHeight - yScale(d.newFirstDoses))
+            .attr("fill", "#5CB0FF");
+
+
+            chartGroup.selectAll("bars")
+            .data(chartData)
+            .enter()
+            .append("rect")
+            .attr("x", d => xScale(luxon.DateTime.fromISO(d.date))+bandWidth/2)
+            .attr("y", d => yScale(d.newSecondDoses))
+            .attr("width", bandWidth/2)
+            .attr("height", d => chartHeight - yScale(d.newSecondDoses))
+            .attr("fill", "#1F93FF");
 
           
         });
