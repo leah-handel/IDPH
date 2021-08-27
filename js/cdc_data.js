@@ -34,7 +34,8 @@ var chartMargin = {
    left: 80
  };
 
-// makeResponsive makes axes and labels
+ var selection = 60640;
+
 
 function drawChartArea() {
 
@@ -51,8 +52,7 @@ function drawChartArea() {
     if (!svgArea.empty()) {
     svgArea.remove();
     }
-  
-    // Select div, append SVG area to it, and set the dimensions
+
     var daily = d3.select("#daily")
       .append("svg")
       .attr("height", svgHeight)
@@ -91,7 +91,7 @@ function drawChartArea() {
     dailyChartGroup.append("g")
       .call(yAxis);
     
-      dailyChartGroup.append("g")
+    dailyChartGroup.append("g")
       .attr("transform", `translate(0, ${chartHeight})`)
       .call(xAxis);
     
@@ -119,73 +119,62 @@ function drawChartArea() {
       .attr("fill", "#1F93FF");
     }
 
-function handleResize() {
-
-  drawChartArea();
-  
-}
-
-// actually build visualization
-
-var url = "https://data.cdc.gov/resource/8xkx-amqh.json?fips=17031"
+//var url = `https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selection}`
 
 chartData = [];
 
-d3.json(url).then(function(cdcResponse){ 
+d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selection}`).then(function(response){
 
-  data = cdcResponse.sort(dateSort);
+  data = response.sort(dateSort);
 
   console.log(data);
 
   data.forEach(function(row, index){
 
-      if (index == 0) {
-        var firstDoses = parseInt(row.administered_dose1_recip);
-        var secondDoses = parseInt(row.series_complete_yes);
+      // if (index == 0) {
+      //   var firstDoses = parseInt(row.administered_dose1_recip);
+      //   var secondDoses = parseInt(row.series_complete_yes);
+      // }else {
+      //   var firstDoses = parseInt(row.administered_dose1_recip - data[index-1]["administered_dose1_recip"]);
+      //   var secondDoses = parseInt(row.series_complete_yes - data[index-1]["series_complete_yes"]);
+      // }
+
+      // if (isNaN(firstDoses)) {
+      //   firstDoses = 0;
+      // }
+
+
+      if (index < 7) {
+        var firstAvg = NaN;
+        var secondAvg = NaN;
       }else {
-        var firstDoses = parseInt(row.administered_dose1_recip - data[index-1]["administered_dose1_recip"]);
-        var secondDoses = parseInt(row.series_complete_yes - data[index-1]["series_complete_yes"]);
-      }
+        firstSum = 0
+        secondSum = 0;
+        for (var i = 0; i < 7; i++) {
+          firstSum += parseInt(data[index-i]["_1st_dose_daily"]);
+          secondSum += parseInt(data[index-i]["vaccine_series_completed_daily"]);
+        };
+        var firstAvg = firstSum/7;
+        var secondAvg = secondSum/7;
+        }
 
-      if (isNaN(firstDoses)) {
-        firstDoses = 0;
-      }
 
-      chartData.push({date: row.date, newFirstDoses: firstDoses, newSecondDoses: secondDoses});
+      chartData.push({date: row.date, newFirstDoses: parseInt(row._1st_dose_daily), newSecondDoses: parseInt(row.vaccine_series_completed_daily), firstAvg: firstAvg, secondAvg: secondAvg});
+
+    });
 
   // push running totals, seven day avg, daily numbers
 
-  });
-
   console.log(chartData);
 
-  chartData.forEach(function (row, index) {
-
-    if (index < 7) {
-      var firstAvg = NaN;
-      var secondAvg = NaN;
-    }else {
-      firstSum = 0;
-      secondSum = 0;
-      for (var i = 0; i < 7; i++) {
-        firstSum += chartData[index-i]["newFirstDoses"];
-        secondSum += chartData[index-i]["newSecondDoses"];
-      };
-      var firstAvg = firstSum/7;
-      var secondAvg = secondSum/7;
-    }
-
-    row.firstAvg = firstAvg;
-    row.secondAvg = secondAvg;
-
-  });
-
-  console.log(chartData);
 
   drawChartArea();
 
+});
+
+
+
   //makeGraphs(chartData);
-  });
 
 
 d3.select(window).on("resize", drawChartArea());
