@@ -10,22 +10,22 @@ function dateSort(a, b) {
 
 
 
-function getAvg(values, period) {
-  avgValues = [];
-  values.forEach(function(date, index){
-    if(index < period-1){
-      avg = 0;
-    }else{
-      sum = 0;
-      for (var i = 0; i < period-1; i++) {
-        sum += values[index-i]
-      };
-      avg = sum/period;
-    }
-    avgValues.push(avg);
-  });
-  return avgValues;
-}
+// function getAvg(values, period) {
+//   avgValues = [];
+//   values.forEach(function(date, index){
+//     if(index < period-1){
+//       avg = 0;
+//     }else{
+//       sum = 0;
+//       for (var i = 0; i < period-1; i++) {
+//         sum += values[index-i]
+//       };
+//       avg = sum/period;
+//     }
+//     avgValues.push(avg);
+//   });
+//   return avgValues;
+// }
 
 var chartMargin = {
   top: 30,
@@ -117,6 +117,16 @@ function drawChartArea() {
       .attr("width", bandWidth/2)
       .attr("height", d => chartHeight - yScale(d.newSecondDoses))
       .attr("fill", "#1F93FF");
+
+
+    var lineFunc = d3.line()
+    .x(d => xScale(luxon.DateTime.fromISO(d.date)))
+    .y(d=> yScale(d.firstAvg))
+
+    dailyChartGroup.append("path")
+      .attr('d', lineFunc(chartData))
+      .attr("fill", "none")
+      .attr("stroke", "red");
     }
 
 //var url = `https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selection}`
@@ -145,8 +155,8 @@ d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selec
 
 
       if (index < 7) {
-        var firstAvg = NaN;
-        var secondAvg = NaN;
+        var firstAvg = 0;
+        var secondAvg = 0;
       }else {
         firstSum = 0
         secondSum = 0;
