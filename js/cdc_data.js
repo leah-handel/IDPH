@@ -8,36 +8,18 @@ function dateSort(a, b) {
     return 0;
   }
 
+  var chartMargin = {
+    top: 30,
+    right: 50,
+     bottom: 50,
+     left: 80
+   };
+  
+  var selection = 60640;
+
+function makeResponsive() {
 
 
-// function getAvg(values, period) {
-//   avgValues = [];
-//   values.forEach(function(date, index){
-//     if(index < period-1){
-//       avg = 0;
-//     }else{
-//       sum = 0;
-//       for (var i = 0; i < period-1; i++) {
-//         sum += values[index-i]
-//       };
-//       avg = sum/period;
-//     }
-//     avgValues.push(avg);
-//   });
-//   return avgValues;
-// }
-
-var chartMargin = {
-  top: 30,
-  right: 50,
-   bottom: 50,
-   left: 80
- };
-
- var selection = 60640;
-
-
-function drawChartArea() {
 
     // Define SVG area dimensions
     var svgWidth = window.innerWidth*.85;
@@ -47,11 +29,13 @@ function drawChartArea() {
     var chartWidth = svgWidth - chartMargin.left - chartMargin.right;
     var chartHeight = svgHeight - chartMargin.top - chartMargin.bottom;
 
-    var svgArea = d3.select("body").select("svg");
+  function drawChartArea() {
+
+    var svgArea = d3.select("body").selectAll("svg");
   
     if (!svgArea.empty()) {
     svgArea.remove();
-    }
+      }
 
     var daily = d3.select("#daily")
       .append("svg")
@@ -119,16 +103,32 @@ function drawChartArea() {
       .attr("fill", "#1F93FF");
 
 
-    var lineFunc = d3.line()
+    var firstAvgFunc = d3.line()
+    .curve(d3.curveBasis)
     .x(d => xScale(luxon.DateTime.fromISO(d.date)))
     .y(d=> yScale(d.firstAvg))
 
-    dailyChartGroup.append("path")
-      .attr('d', lineFunc(chartData))
-      .attr("fill", "none")
-      .attr("stroke", "red");
-    }
+    var secondAvgFunc = d3.line()
+    .curve(d3.curveBasis)
+    .x(d => xScale(luxon.DateTime.fromISO(d.date)))
+    .y(d=> yScale(d.secondAvg))
 
+    dailyChartGroup.append("path")
+      .attr('d', firstAvgFunc(chartData))
+      .attr("fill", "none")
+      .attr("stroke", "red")
+      .attr("stroke-width", 1.5);
+  
+
+    dailyChartGroup.append("path")
+      .attr('d', secondAvgFunc(chartData))
+      .attr("fill", "none")
+      .attr("stroke", "yellow")
+      .attr("stroke-width", 1.5);
+  }
+
+  drawChartArea();
+}
 //var url = `https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selection}`
 
 chartData = [];
@@ -177,14 +177,12 @@ d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selec
 
   console.log(chartData);
 
-
-  drawChartArea();
+  makeResponsive();
+  
 
 });
 
 
 
-  //makeGraphs(chartData);
+d3.select(window).on("resize", makeResponsive);
 
-
-d3.select(window).on("resize", drawChartArea());
