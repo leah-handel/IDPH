@@ -15,7 +15,19 @@ function dateSort(a, b) {
      left: 80
    };
   
-  var selection = 60640;
+
+var zips = [60007, 60018, 60068, 60106, 60131, 60176, 60601, 60602, 60603, 60604, 60605, 60606, 60607, 60608, 60609, 60610, 60611, 60612, 60613, 60614, 60615, 60616, 60617, 60618, 60619, 60620, 60621, 60622, 60623, 60624, 60625, 60626, 60628, 60629, 60630, 60631, 60632, 60633, 60634, 60636, 60637, 60638, 60639, 60640, 60641, 60642, 60643, 60644, 60645, 60646, 60647, 60649, 60651, 60652, 60653, 60654, 60655, 60656, 60657, 60659, 60660, 60661, 60706, 60707, 60714, 60804, 60827];
+
+var zipInput = d3.select("#zip-input");
+
+zipInput.selectAll("option")
+   .data(zips)
+   .enter()
+   .append("option")
+   .attr("value", d => d)
+   .text(d => d);
+
+
 
 function makeResponsive() {
 
@@ -130,7 +142,7 @@ function makeResponsive() {
   drawChartArea();
 }
 //var url = `https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selection}`
-
+function getData(selection) {
 chartData = [];
 
 d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selection}`).then(function(response){
@@ -140,20 +152,7 @@ d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selec
   console.log(data);
 
   data.forEach(function(row, index){
-
-      // if (index == 0) {
-      //   var firstDoses = parseInt(row.administered_dose1_recip);
-      //   var secondDoses = parseInt(row.series_complete_yes);
-      // }else {
-      //   var firstDoses = parseInt(row.administered_dose1_recip - data[index-1]["administered_dose1_recip"]);
-      //   var secondDoses = parseInt(row.series_complete_yes - data[index-1]["series_complete_yes"]);
-      // }
-
-      // if (isNaN(firstDoses)) {
-      //   firstDoses = 0;
-      // }
-
-
+    
       if (index < 7) {
         var firstAvg = 0;
         var secondAvg = 0;
@@ -182,7 +181,15 @@ d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selec
 
 });
 
+}
 
+getData(60640);
+
+zipInput.on("change", function(d) {
+  var selection = d3.select(this).property("value");
+  console.log(selection);
+  getData(selection);
+})
 
 d3.select(window).on("resize", makeResponsive);
 
