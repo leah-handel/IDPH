@@ -49,6 +49,8 @@ function makeResponsive() {
     svgArea.remove();
       }
 
+// draw daily chart
+
     var daily = d3.select("#daily")
       .append("svg")
       .attr("height", svgHeight)
@@ -137,7 +139,50 @@ function makeResponsive() {
       .attr("fill", "none")
       .attr("stroke", "yellow")
       .attr("stroke-width", 1.5);
-  }
+
+//  draw total chart
+
+var pct = d3.select("#total")
+.append("svg")
+.attr("height", svgHeight)
+.attr("width", svgWidth)
+.attr("id", "totalSVG");
+
+var pctLabelsGroup = pct.append("g")
+.attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
+
+pctLabelsGroup.append("text")
+.attr("transform", `translate(${chartWidth / 2}, ${chartHeight+40})`)
+.style('text-anchor', 'middle')
+.text("Date");
+
+pctLabelsGroup.append("text")
+.attr("transform",`rotate(-90) translate(-${chartHeight/2}, -60)`)
+.style('text-anchor', 'middle')
+.text("% Vaccinated");
+
+var pctChartGroup = pct.append("g")
+.attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`)
+
+var pctXScale = d3.scaleTime()
+.domain([d3.min(chartData.map(d=>luxon.DateTime.fromISO(d.date))), d3.max(chartData.map(d=>luxon.DateTime.fromISO(d.date)))]).nice()
+.range([0, chartWidth]);
+
+var pctYScale = d3.scaleLinear()
+.domain([0, d3.max(chartData.map(d=>d.pctFirst))]).nice()
+.range([chartHeight, 0]);
+
+var pctYAxis = d3.axisLeft(pctYScale).ticks(chartHeight/60);
+var pctXAxis = d3.axisBottom(xScale).ticks();
+
+pctChartGroup.append("g")
+.call(pctYAxis);
+
+pctChartGroup.append("g")
+.attr("transform", `translate(0, ${chartHeight})`)
+.call(pctXAxis);
+
+}
 
   drawChartArea();
 }
@@ -167,8 +212,11 @@ d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selec
         var secondAvg = secondSum/7;
         }
 
+      var pctFirst = parseFloat(row._1st_dose_percent_population)*100;
+      var pctSecond = parseFloat(row.vaccine_series_completed_percent_population)*100;
 
-      chartData.push({date: row.date, newFirstDoses: parseInt(row._1st_dose_daily), newSecondDoses: parseInt(row.vaccine_series_completed_daily), firstAvg: firstAvg, secondAvg: secondAvg});
+
+      chartData.push({date: row.date, newFirstDoses: parseInt(row._1st_dose_daily), newSecondDoses: parseInt(row.vaccine_series_completed_daily), firstAvg: firstAvg, secondAvg: secondAvg, pctSecond: pctSecond, pctFirst: pctFirst});
 
     });
 
