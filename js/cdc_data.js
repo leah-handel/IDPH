@@ -164,23 +164,18 @@ pctLabelsGroup.append("text")
 var pctChartGroup = pct.append("g")
 .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`)
 
-var pctXScale = d3.scaleTime()
-.domain([d3.min(chartData.map(d=>luxon.DateTime.fromISO(d.date))), d3.max(chartData.map(d=>luxon.DateTime.fromISO(d.date)))]).nice()
-.range([0, chartWidth]);
-
 var pctYScale = d3.scaleLinear()
 .domain([0, d3.max(chartData.map(d=>d.pctFirst))]).nice()
 .range([chartHeight, 0]);
 
 var pctYAxis = d3.axisLeft(pctYScale).ticks(chartHeight/60);
-var pctXAxis = d3.axisBottom(xScale).ticks();
 
 pctChartGroup.append("g")
 .call(pctYAxis);
 
 pctChartGroup.append("g")
 .attr("transform", `translate(0, ${chartHeight})`)
-.call(pctXAxis);
+.call(xAxis);
 
 }
 
