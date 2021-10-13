@@ -177,6 +177,28 @@ pctChartGroup.append("g")
 .attr("transform", `translate(0, ${chartHeight})`)
 .call(xAxis);
 
+var firstDoseFunc = d3.line()
+.curve(d3.curveBasis)
+.x(d => xScale(luxon.DateTime.fromISO(d.date)))
+.y(d=> pctYScale(d.pctFirst));
+
+var secondDoseFunc = d3.line()
+.curve(d3.curveBasis)
+.x(d => xScale(luxon.DateTime.fromISO(d.date)))
+.y(d=> pctYScale(d.pctSecond));
+
+pctChartGroup.append("path")
+.attr('d', firstDoseFunc(chartData))
+.attr("fill", "none")
+.attr("stroke", "red")
+.attr("stroke-width", 1.5);
+
+pctChartGroup.append("path")
+.attr('d', secondDoseFunc(chartData))
+.attr("fill", "none")
+.attr("stroke", "red")
+.attr("stroke-width", 1.5);
+
 }
 
   drawChartArea();
