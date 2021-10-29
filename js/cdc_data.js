@@ -10,7 +10,7 @@ function dateSort(a, b) {
 
   var chartMargin = {
     top: 30,
-    right: 50,
+    right: 80,
      bottom: 50,
      left: 80
    };
@@ -199,6 +199,20 @@ pctChartGroup.append("path")
 .attr("stroke", "red")
 .attr("stroke-width", 1.5);
 
+//annotations
+
+var lastData = chartData[chartData.length-1];
+
+var pctAnnotations = pctChartGroup.append("g")
+.attr("transform",`translate(${chartWidth}, ${chartHeight/10})`)
+
+pctAnnotations.append("text")
+  .text(`${Math.round(lastData.pctFirst*10)/10}%`)
+
+pctAnnotations.append("text")
+  .attr("dy", "1.5em")
+  .text(`${Math.round(lastData.pctSecond*10)/10}%`)
+
 }
 
   drawChartArea();
@@ -235,6 +249,7 @@ d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selec
 
       chartData.push({date: row.date, newFirstDoses: parseInt(row._1st_dose_daily), newSecondDoses: parseInt(row.vaccine_series_completed_daily), firstAvg: firstAvg, secondAvg: secondAvg, pctSecond: pctSecond, pctFirst: pctFirst});
 
+      lastData = chartData[chartData.length-1];
     });
 
   // push running totals, seven day avg, daily numbers
