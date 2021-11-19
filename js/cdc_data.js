@@ -263,7 +263,7 @@ d3.json(`https://data.cityofchicago.org/resource/553k-3xzc.json?zip_code=${selec
 
 }
 
-getData(60640);
+getData(60601);
 
 zipInput.on("change", function(d) {
   var selection = d3.select(this).property("value");
