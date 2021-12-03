@@ -103,7 +103,7 @@ function makeResponsive() {
       .attr("y", d => yScale(d.newFirstDoses))
       .attr("width", bandWidth/2)
       .attr("height", d => chartHeight - yScale(d.newFirstDoses))
-      .attr("fill", "#5CB0FF");
+      .attr("fill", "#AEB8FE");
     
     
     dailyChartGroup.selectAll("bars")
@@ -114,7 +114,7 @@ function makeResponsive() {
       .attr("y", d => yScale(d.newSecondDoses))
       .attr("width", bandWidth/2)
       .attr("height", d => chartHeight - yScale(d.newSecondDoses))
-      .attr("fill", "#1F93FF");
+      .attr("fill", "#2541B2");
 
 
     var firstAvgFunc = d3.line()
@@ -130,15 +130,15 @@ function makeResponsive() {
     dailyChartGroup.append("path")
       .attr('d', firstAvgFunc(chartData))
       .attr("fill", "none")
-      .attr("stroke", "red")
-      .attr("stroke-width", 1.5);
+      .attr("stroke", "#EB8A90")
+      .attr("stroke-width", 2);
   
 
     dailyChartGroup.append("path")
       .attr('d', secondAvgFunc(chartData))
       .attr("fill", "none")
-      .attr("stroke", "yellow")
-      .attr("stroke-width", 1.5);
+      .attr("stroke", "#A31621")
+      .attr("stroke-width", 2);
 
 //  draw total chart
 
@@ -190,14 +190,14 @@ var secondDoseFunc = d3.line()
 pctChartGroup.append("path")
 .attr('d', firstDoseFunc(chartData))
 .attr("fill", "none")
-.attr("stroke", "red")
-.attr("stroke-width", 1.5);
+.attr("stroke", "#EB8A90")
+.attr("stroke-width", 2);
 
 pctChartGroup.append("path")
 .attr('d', secondDoseFunc(chartData))
 .attr("fill", "none")
-.attr("stroke", "red")
-.attr("stroke-width", 1.5);
+.attr("stroke", "#A31621")
+.attr("stroke-width", 2);
 
 //annotations
 
